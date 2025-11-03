@@ -193,6 +193,7 @@ http://localhost:8000/index.html?utm_source=youtube&utm_medium=video&utm_campaig
 또는 실제 배포된 사이트:
 ```
 https://yourdomain.com/index.html?utm_source=test&utm_medium=manual&utm_campaign=script-test
+https://adhd-assessment.netlify.app/index.html?utm_source=test&utm_medium=manual&utm_campaign=script-test
 ```
 
 ### 확인 사항

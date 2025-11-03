@@ -22,7 +22,7 @@ UTM (Urchin Tracking Module) 파라미터는 URL에 추가하는 쿼리 문자�
 ### 1. YouTube (영상 설명란)
 
 ```
-https://yourdomain.com/index.html?utm_source=youtube&utm_medium=video&utm_campaign=adhd-jan-2025&utm_content=video-description
+https://adhd-assessment.netlify.app?utm_source=youtube&utm_medium=video&utm_campaign=adhd-jan-2025&utm_content=video-description
 ```
 
 **단축 URL 권장:**
@@ -33,7 +33,7 @@ https://bit.ly/adhd-test-yt
 ### 2. 카카오톡 (메시지/오픈채팅)
 
 ```
-https://yourdomain.com/index.html?utm_source=kakaotalk&utm_medium=messaging&utm_campaign=adhd-jan-2025
+https://adhd-assessment.netlify.app?utm_source=kakaotalk&utm_medium=messaging&utm_campaign=adhd-jan-2025
 ```
 
 **단축 URL:**
@@ -44,7 +44,7 @@ https://bit.ly/adhd-test-kakao
 ### 3. Threads (게시물)
 
 ```
-https://yourdomain.com/index.html?utm_source=threads&utm_medium=social&utm_campaign=adhd-jan-2025&utm_content=post-link
+https://adhd-assessment.netlify.app?utm_source=threads&utm_medium=social&utm_campaign=adhd-jan-2025&utm_content=post-link
 ```
 
 **단축 URL:**
@@ -55,7 +55,7 @@ https://bit.ly/adhd-test-threads
 ### 4. Instagram (바이오 링크)
 
 ```
-https://yourdomain.com/index.html?utm_source=instagram&utm_medium=social&utm_campaign=adhd-jan-2025&utm_content=bio-link
+https://adhd-assessment.netlify.app?utm_source=instagram&utm_medium=social&utm_campaign=adhd-jan-2025&utm_content=bio-link
 ```
 
 **단축 URL:**
@@ -66,31 +66,31 @@ https://bit.ly/adhd-test-ig
 ### 5. Instagram (스토리 - 1만 팔로워 이상)
 
 ```
-https://yourdomain.com/index.html?utm_source=instagram&utm_medium=social&utm_campaign=adhd-jan-2025&utm_content=story-swipeup
+https://adhd-assessment.netlify.app?utm_source=instagram&utm_medium=social&utm_campaign=adhd-jan-2025&utm_content=story-swipeup
 ```
 
 ### 6. Facebook (게시물)
 
 ```
-https://yourdomain.com/index.html?utm_source=facebook&utm_medium=social&utm_campaign=adhd-jan-2025&utm_content=post-link
+https://adhd-assessment.netlify.app?utm_source=facebook&utm_medium=social&utm_campaign=adhd-jan-2025&utm_content=post-link
 ```
 
 ### 7. Twitter/X (트윗)
 
 ```
-https://yourdomain.com/index.html?utm_source=twitter&utm_medium=social&utm_campaign=adhd-jan-2025&utm_content=tweet
+https://adhd-assessment.netlify.app?utm_source=twitter&utm_medium=social&utm_campaign=adhd-jan-2025&utm_content=tweet
 ```
 
 ### 8. 네이버 블로그
 
 ```
-https://yourdomain.com/index.html?utm_source=naver&utm_medium=blog&utm_campaign=adhd-jan-2025
+https://adhd-assessment.netlify.app?utm_source=naver&utm_medium=blog&utm_campaign=adhd-jan-2025
 ```
 
 ### 9. 이메일 뉴스레터
 
 ```
-https://yourdomain.com/index.html?utm_source=newsletter&utm_medium=email&utm_campaign=adhd-jan-2025&utm_content=january-edition
+https://adhd-assessment.netlify.app?utm_source=newsletter&utm_medium=email&utm_campaign=adhd-jan-2025&utm_content=january-edition
 ```
 
 ## UTM 명명 규칙
@@ -185,8 +185,8 @@ https://yourdomain.com/index.html?utm_source=newsletter&utm_medium=email&utm_cam
 
 | 채널 | 캠페인 | 긴 URL | 단축 URL | 생성일 | 메모 |
 |------|--------|---------|----------|--------|------|
-| YouTube | adhd-jan-2025 | https://yourdomain.com/index.html?utm_source=... | https://bit.ly/adhd-test-yt | 2025-01-15 | 메인 채널 영상 설명란 |
-| KakaoTalk | adhd-jan-2025 | https://yourdomain.com/index.html?utm_source=... | https://bit.ly/adhd-test-kakao | 2025-01-15 | 오픈채팅방 공지 |
+| YouTube | adhd-jan-2025 | https://adhd-assessment.netlify.app?utm_source=... | https://bit.ly/adhd-test-yt | 2025-01-15 | 메인 채널 영상 설명란 |
+| KakaoTalk | adhd-jan-2025 | https://adhd-assessment.netlify.app?utm_source=... | https://bit.ly/adhd-test-kakao | 2025-01-15 | 오픈채팅방 공지 |
 
 ## 테스트 방법
 

@@ -66,7 +66,10 @@ function categorizeReferrer(domain) {
         'naver.com': 'naver',
         'google.com': 'google',
         'bing.com': 'bing',
-        'daum.net': 'daum'
+        'daum.net': 'daum',
+        'spartacodingclub.kr': 'sparta',
+        'sparta.com': 'sparta',
+        'scc.spartacodingclub.kr': 'sparta'
     };
 
     // 정확히 일치하는지 확인
