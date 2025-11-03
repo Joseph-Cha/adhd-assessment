@@ -45,11 +45,106 @@ const results = {
 // 구글 시트 연동 URL
 const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbxt07-OoDhRFKBzfXSy0rfYFTh-5XWzIccby4aNh3kXT17S3bSSClCk93dsAI9x4V9oog/exec';
 
+// ============================================
+// 유입 경로 추적 (TRAFFIC SOURCE TRACKING)
+// ============================================
+
+// 알려진 referrer 도메인을 소스명으로 변환
+function categorizeReferrer(domain) {
+    const knownSources = {
+        'instagram.com': 'instagram',
+        'l.instagram.com': 'instagram',
+        'threads.net': 'threads',
+        't.co': 'twitter',
+        'twitter.com': 'twitter',
+        'x.com': 'twitter',
+        'facebook.com': 'facebook',
+        'fb.com': 'facebook',
+        'youtube.com': 'youtube',
+        'youtu.be': 'youtube',
+        'kakaotalk.com': 'kakaotalk',
+        'naver.com': 'naver',
+        'google.com': 'google',
+        'bing.com': 'bing',
+        'daum.net': 'daum'
+    };
+
+    // 정확히 일치하는지 확인
+    if (knownSources[domain]) {
+        return knownSources[domain];
+    }
+
+    // 부분 일치 확인 (예: m.facebook.com)
+    for (const [key, value] of Object.entries(knownSources)) {
+        if (domain.includes(key.split('.')[0])) {
+            return value;
+        }
+    }
+
+    return domain; // 알 수 없는 경우 원본 도메인 반환
+}
+
+// 유입 경로 정보 가져오기
+function getTrafficSource() {
+    const urlParams = new URLSearchParams(window.location.search);
+
+    // 1. UTM 파라미터 확인 (최우선)
+    const utmSource = urlParams.get('utm_source');
+    const utmMedium = urlParams.get('utm_medium');
+    const utmCampaign = urlParams.get('utm_campaign');
+    const utmTerm = urlParams.get('utm_term');
+    const utmContent = urlParams.get('utm_content');
+
+    // 2. Referrer 정보 가져오기
+    let referrer = document.referrer;
+    let referrerDomain = 'direct';
+
+    if (referrer) {
+        try {
+            const url = new URL(referrer);
+            referrerDomain = url.hostname;
+        } catch (e) {
+            referrerDomain = 'parse-error';
+        }
+    }
+
+    // 3. 최종 소스 결정
+    let source, medium, campaign;
+
+    if (utmSource) {
+        // UTM 파라미터가 있으면 사용 (가장 신뢰도 높음)
+        source = utmSource;
+        medium = utmMedium || 'unknown';
+        campaign = utmCampaign || 'not-set';
+    } else if (referrer && referrerDomain !== window.location.hostname) {
+        // 외부 referrer가 있으면 분류
+        source = categorizeReferrer(referrerDomain);
+        medium = 'referral';
+        campaign = 'organic';
+    } else {
+        // UTM도 없고 referrer도 없으면 직접 유입
+        source = 'direct';
+        medium = 'none';
+        campaign = 'not-set';
+    }
+
+    return {
+        source: source,
+        medium: medium,
+        campaign: campaign,
+        term: utmTerm || 'not-set',
+        content: utmContent || 'not-set',
+        referrer: referrer || 'none',
+        referrerDomain: referrerDomain
+    };
+}
+
 // 전역 변수
 let currentQuestionIndex = 0;
 let yesCount = 0;
 let userGender = null; // 'male', 'female', 또는 'skip'
 let userAnswers = []; // 각 문항별 답변 저장 (true: 그렇다, false: 아니다)
+let trafficSourceData = null; // 유입 경로 데이터 (최초 방문 시 1회 저장)
 
 // 페이지 전환 함수
 function showPage(pageId) {
@@ -112,16 +207,36 @@ function answer(isYes) {
     }
 }
 
-// 구글 시트에 결과 전송
+// 구글 시트에 결과 전송 (유입 경로 정보 포함)
 async function submitToGoogleSheets() {
     const data = {
+        // 기존 테스트 결과 데이터
         gender: userGender,
         answers: userAnswers,
-        score: yesCount
+        score: yesCount,
+
+        // 유입 경로 추적 데이터
+        utm_source: trafficSourceData.source,
+        utm_medium: trafficSourceData.medium,
+        utm_campaign: trafficSourceData.campaign,
+        utm_term: trafficSourceData.term,
+        utm_content: trafficSourceData.content,
+        referrer: trafficSourceData.referrer,
+        referrer_domain: trafficSourceData.referrerDomain,
+
+        // 추가 메타데이터
+        timestamp: new Date().toISOString(),
+        user_agent: navigator.userAgent,
+        screen_width: window.screen.width,
+        screen_height: window.screen.height,
+        language: navigator.language,
+
+        // 소스 캡처 시각 (최초 방문 시각)
+        source_timestamp: trafficSourceData.timestamp
     };
 
     try {
-        const response = await fetch(GOOGLE_SHEETS_URL, {
+        await fetch(GOOGLE_SHEETS_URL, {
             method: 'POST',
             mode: 'no-cors', // 구글 Apps Script 웹 앱은 CORS 제한이 있음
             headers: {
@@ -130,6 +245,7 @@ async function submitToGoogleSheets() {
             body: JSON.stringify(data)
         });
         console.log('데이터가 구글 시트에 성공적으로 저장되었습니다.');
+        console.log('전송된 데이터:', data);
     } catch (error) {
         console.error('데이터 전송 중 오류 발생:', error);
         // 전송 실패해도 결과는 사용자에게 보여줌
@@ -202,5 +318,21 @@ function restartTest() {
 
 // 페이지 로드 시 초기화
 document.addEventListener('DOMContentLoaded', function() {
+    // 유입 경로 추적 (세션 기반 - 최초 방문 시 1회만 저장)
+    const SESSION_KEY = 'adhd_traffic_source';
+    const existingSource = sessionStorage.getItem(SESSION_KEY);
+
+    if (existingSource) {
+        // 재방문 - 저장된 소스 사용
+        trafficSourceData = JSON.parse(existingSource);
+        console.log('재방문자 - 기존 유입 경로 사용:', trafficSourceData);
+    } else {
+        // 최초 방문 - 유입 경로 캡처
+        trafficSourceData = getTrafficSource();
+        trafficSourceData.timestamp = new Date().toISOString();
+        sessionStorage.setItem(SESSION_KEY, JSON.stringify(trafficSourceData));
+        console.log('신규 방문자 - 유입 경로 캡처:', trafficSourceData);
+    }
+
     showPage('landing-page');
 });
