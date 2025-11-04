@@ -550,7 +550,7 @@ const SURVEY_URL = 'https://forms.gle/9UHr4v179EKxnUcC9';
 function renderSurveyVersion_Original(container) {
     const btn = document.createElement('button');
     btn.className = 'cta-btn cta-primary';
-    btn.textContent = '📝 설문조사 참여하고 리워드 받기(스타벅스 쿠폰)';
+    btn.textContent = '📝 설문조사 참여하고 리워드 받기(배민 쿠폰 5천원)';
     btn.onclick = function() {
         window.open(SURVEY_URL, '_blank');
     };
@@ -564,7 +564,7 @@ function renderSurveyVersion_A(container) {
     btn.style.fontSize = '18px';
     btn.style.padding = '20px 30px';
     btn.style.animation = 'pulse 2s infinite';
-    btn.innerHTML = '🎁 지금 참여하면 스벅 쿠폰!<br><small style="font-size: 14px; opacity: 0.9;">3분이면 끝 • 추첨 3명</small>';
+    btn.innerHTML = '🎁 지금 참여하면 배민 쿠폰 5천원 (추첨)!<br><small style="font-size: 14px; opacity: 0.9;">3분이면 끝</small>';
     btn.onclick = function() {
         window.open(SURVEY_URL, '_blank');
     };
@@ -590,7 +590,7 @@ function renderSurveyVersion_B(container) {
         </div>
         <div style="font-size: 14px; line-height: 1.6; opacity: 0.95;">
             ✓ 소요 시간: 약 3분<br>
-            ✓ 리워드: 스타벅스 아메리카노 기프티콘 (추첨 3명)<br>
+            ✓ 리워드: 배민 쿠폰 5천원 (추첨)<br>
             ✓ 마감: 11월 7일 (목)까지
         </div>
     `;
@@ -626,7 +626,7 @@ function renderSurveyVersion_C(container) {
             당신의 솔직한 경험이 비슷한 어려움을 겪는 분들을 위한 <strong>실질적인 서비스</strong>를 만드는 데 큰 힘이 됩니다.
         </div>
         <div style="font-size: 13px; color: #888; margin-top: 10px;">
-            📋 3분 소요 | 🎁 감사 리워드: 스벅 쿠폰 (추첨)
+            📋 3분 소요 | 🎁 감사 리워드: 배민 쿠폰 5천원 (추첨)
         </div>
     `;
 
@@ -672,7 +672,7 @@ function renderSurveyVersion_D(container) {
             🎁 선착순 설문 참여 혜택
         </div>
         <div style="font-size: 14px; color: #78350f; line-height: 1.6;">
-            ✓ 스타벅스 아이스 아메리카노 (3명 추첨)<br>
+            ✓ 배민 쿠폰 5천원 (추첨)<br>
             ✓ 심층 인터뷰 참여 시 배민 쿠폰 2만원 추가 증정<br>
             ✓ 소요시간 단 3분
         </div>
