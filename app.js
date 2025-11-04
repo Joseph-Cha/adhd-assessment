@@ -322,21 +322,47 @@ function updateScoreVisualization(score, riskLevel) {
     const container = document.querySelector('.score-bar-container');
 
     if (indicator && container) {
-        // 각 범위의 비율 계산 (0-2: 25%, 3-5: 25%, 6-8: 25%, 9-12: 25%)
+        // 각 범위의 비율 계산 (각 구간에 여백을 두어 자연스러운 위치 표시)
         let position = 0;
 
         if (score <= 2) {
-            // 저위험군: 0-25%
-            position = (score / 2) * 25;
+            // 저위험군: 5-22% (0-2점, 각 구간에서 적절한 위치)
+            if (score === 0) {
+                position = 8;
+            } else if (score === 1) {
+                position = 15;
+            } else {
+                position = 22;
+            }
         } else if (score <= 5) {
-            // 경도: 25-50%
-            position = 25 + ((score - 2) / 3) * 25;
+            // 경도: 28-47% (3-5점)
+            if (score === 3) {
+                position = 30;
+            } else if (score === 4) {
+                position = 38;
+            } else {
+                position = 47;
+            }
         } else if (score <= 8) {
-            // 중등도: 50-75%
-            position = 50 + ((score - 5) / 3) * 25;
+            // 중등도: 53-72% (6-8점)
+            if (score === 6) {
+                position = 55;
+            } else if (score === 7) {
+                position = 63;
+            } else {
+                position = 72;
+            }
         } else {
-            // 고위험: 75-100%
-            position = 75 + ((score - 8) / 4) * 25;
+            // 고위험: 77-95% (9-12점, 끝이 100%를 넘지 않도록)
+            if (score === 9) {
+                position = 78;
+            } else if (score === 10) {
+                position = 84;
+            } else if (score === 11) {
+                position = 90;
+            } else {
+                position = 95; // 12점은 95%에 위치 (끝에서 약간 여유)
+            }
         }
 
         indicator.style.left = position + '%';

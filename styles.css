@@ -484,10 +484,10 @@ body {
 
 .score-indicator {
     position: absolute;
-    bottom: 0;
+    top: 85px;  /* 🎯 화살표 위치 조정: 숫자를 늘리면 아래로, 줄이면 위로 */
     transform: translateX(-50%);
     text-align: center;
-    transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    transition: left 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
 .indicator-arrow {
@@ -724,6 +724,10 @@ body {
         font-size: 0.8rem;
         padding: 3px 10px;
     }
+
+    .score-indicator {
+        top: 75px;  /* 🎯 태블릿: 화살표 위치 조정 */
+    }
 }
 
 @media (max-width: 480px) {
@@ -790,6 +794,10 @@ body {
     .indicator-label {
         font-size: 0.75rem;
         padding: 2px 8px;
+    }
+
+    .score-indicator {
+        top: 70px;  /* 🎯 모바일: 화살표 위치 조정 */
     }
 }
 
