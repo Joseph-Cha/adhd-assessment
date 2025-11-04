@@ -339,3 +339,154 @@ document.addEventListener('DOMContentLoaded', function() {
 
     showPage('landing-page');
 });
+
+// ============================================
+// 결과 이미지 저장 및 공유 기능
+// ============================================
+
+// 결과 화면을 이미지로 캡처
+async function captureResultAsCanvas() {
+    try {
+        // html2canvas가 로드되었는지 확인
+        if (typeof html2canvas === 'undefined') {
+            throw new Error('html2canvas 라이브러리가 로드되지 않았습니다.');
+        }
+
+        // 결과 페이지 전체를 캡처
+        const resultPage = document.getElementById('result-page');
+        const canvas = await html2canvas(resultPage, {
+            backgroundColor: '#ffffff',
+            scale: 2, // 고해상도
+            logging: false,
+            useCORS: true
+        });
+
+        return canvas;
+    } catch (error) {
+        console.error('이미지 캡처 중 오류 발생:', error);
+        alert('이미지 생성 중 오류가 발생했습니다. 다시 시도해주세요.');
+        throw error;
+    }
+}
+
+// 결과를 이미지 파일로 저장
+async function saveResultAsImage() {
+    try {
+        const canvas = await captureResultAsCanvas();
+
+        // Canvas를 Blob으로 변환
+        canvas.toBlob(function(blob) {
+            // 다운로드 링크 생성
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+
+            // 파일명 생성 (날짜 포함)
+            const date = new Date().toISOString().split('T')[0];
+            link.download = `ADHD-테스트-결과-${date}.png`;
+            link.href = url;
+
+            // 다운로드 트리거
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            // 메모리 정리
+            URL.revokeObjectURL(url);
+
+            console.log('이미지가 성공적으로 저장되었습니다.');
+        }, 'image/png');
+    } catch (error) {
+        console.error('이미지 저장 중 오류 발생:', error);
+    }
+}
+
+// 결과 공유하기 (Web Share API)
+async function shareResult() {
+    try {
+        // 공유 텍스트 생성
+        const resultLevel = getResultLevel();
+        const shareText = `나는 ADHD 자가진단에서 12점 중 ${yesCount}점! ${resultLevel}\n\n당신도 테스트 해보세요:`;
+        const shareUrl = window.location.origin + window.location.pathname;
+
+        // Web Share API 지원 확인
+        if (navigator.share) {
+            // 이미지 캡처
+            const canvas = await captureResultAsCanvas();
+
+            // Canvas를 Blob으로 변환
+            canvas.toBlob(async function(blob) {
+                try {
+                    // 파일명 생성
+                    const date = new Date().toISOString().split('T')[0];
+                    const file = new File([blob], `ADHD-테스트-결과-${date}.png`, { type: 'image/png' });
+
+                    // 파일 공유 가능 여부 확인
+                    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                        // 이미지와 함께 공유
+                        await navigator.share({
+                            title: 'ADHD 자가진단 테스트 결과',
+                            text: shareText,
+                            url: shareUrl,
+                            files: [file]
+                        });
+                        console.log('공유가 성공적으로 완료되었습니다.');
+                    } else {
+                        // 이미지 없이 텍스트만 공유
+                        await navigator.share({
+                            title: 'ADHD 자가진단 테스트',
+                            text: shareText,
+                            url: shareUrl
+                        });
+                        console.log('텍스트 공유가 완료되었습니다.');
+                    }
+                } catch (shareError) {
+                    // 사용자가 공유를 취소한 경우
+                    if (shareError.name === 'AbortError') {
+                        console.log('공유가 취소되었습니다.');
+                    } else {
+                        console.error('공유 중 오류 발생:', shareError);
+                        // 폴백: URL 복사
+                        fallbackCopyUrl(shareUrl);
+                    }
+                }
+            }, 'image/png');
+        } else {
+            // Web Share API 미지원 - URL 복사로 폴백
+            fallbackCopyUrl(shareUrl);
+        }
+    } catch (error) {
+        console.error('공유 기능 실행 중 오류 발생:', error);
+        fallbackCopyUrl(window.location.origin + window.location.pathname);
+    }
+}
+
+// 결과 등급 텍스트 가져오기
+function getResultLevel() {
+    if (yesCount >= results.low.range[0] && yesCount <= results.low.range[1]) {
+        return results.low.title;
+    } else if (yesCount >= results.mild.range[0] && yesCount <= results.mild.range[1]) {
+        return results.mild.title;
+    } else if (yesCount >= results.moderate.range[0] && yesCount <= results.moderate.range[1]) {
+        return results.moderate.title;
+    } else {
+        return results.high.title;
+    }
+}
+
+// 폴백: URL을 클립보드에 복사
+function fallbackCopyUrl(url) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url)
+            .then(() => {
+                alert('테스트 링크가 클립보드에 복사되었습니다!\n원하는 곳에 붙여넣기 해주세요.');
+            })
+            .catch(err => {
+                console.error('클립보드 복사 실패:', err);
+                // 최종 폴백: 프롬프트로 URL 표시
+                prompt('이 링크를 복사하여 공유하세요:', url);
+            });
+    } else {
+        // 클립보드 API 미지원 - 프롬프트로 표시
+        prompt('이 링크를 복사하여 공유하세요:', url);
+    }
+}
