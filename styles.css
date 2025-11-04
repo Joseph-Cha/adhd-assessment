@@ -472,6 +472,16 @@ body {
     box-shadow: var(--shadow-lg);
 }
 
+.copy-btn {
+    background: #10b981;
+}
+
+.copy-btn:hover {
+    background: #059669;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
 .share-btn:active {
     transform: translateY(0);
 }

@@ -450,6 +450,27 @@ function fallbackCopyUrl(url) {
     }
 }
 
+// 링크 복사 기능
+function copyLink() {
+    const url = window.location.href;
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url)
+            .then(() => {
+                alert('✅ 링크가 클립보드에 복사되었습니다!\n원하는 곳에 붙여넣기 해주세요.');
+                console.log('링크 복사 완료:', url);
+            })
+            .catch(err => {
+                console.error('클립보드 복사 실패:', err);
+                // 폴백: 프롬프트로 URL 표시
+                prompt('링크를 복사하세요:', url);
+            });
+    } else {
+        // 클립보드 API 미지원 - 프롬프트로 표시
+        prompt('링크를 복사하세요:', url);
+    }
+}
+
 // ============================================
 // 설문조사 안내 기능
 // ============================================
