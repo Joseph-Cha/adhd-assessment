@@ -288,9 +288,9 @@ function showResult() {
         // N >= 10: 설문조사 참여 안내 버튼
         const btn = document.createElement('button');
         btn.className = 'cta-btn cta-primary';
-        btn.textContent = '📝 설문조사 참여하고 리워드 받기';
+        btn.textContent = '📝 설문조사 참여하고 리워드 받기(스타벅스 쿠폰)';
         btn.onclick = function() {
-            showSurveyInfo();
+            window.open(SURVEY_URL, '_blank');
         };
         ctaContainer.appendChild(btn);
     }
