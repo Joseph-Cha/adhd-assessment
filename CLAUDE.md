@@ -2,6 +2,19 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Claude Code Workflow Guidelines
+
+**IMPORTANT: Do NOT create or update documentation files unless explicitly requested by the user.**
+
+When making changes to the codebase:
+- ❌ Do NOT automatically create new `.md` files to document changes
+- ❌ Do NOT update existing documentation (CLAUDE.md, README.md, etc.) after every task
+- ❌ Do NOT write changelog entries or update history files
+- ✅ Only update documentation when the user explicitly asks for it
+- ✅ Focus on code implementation rather than documentation
+
+Exception: You may create documentation if the user specifically requests it (e.g., "create a guide for...", "document how to...").
+
 ## Project Overview
 
 This is a Korean-language ADHD self-assessment web application that collects user responses to 12 diagnostic questions and provides risk-level results. The application features comprehensive traffic source tracking (UTM parameters and referrer detection) and automatically saves responses to Google Sheets for data analysis.

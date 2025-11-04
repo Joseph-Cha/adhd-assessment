@@ -89,6 +89,36 @@
                     </p>
                 </div>
 
+                <!-- 위험도 레벨 표시 -->
+                <div class="risk-level-container">
+                    <div class="risk-level-badge" id="risk-level-badge">
+                        <span class="risk-level-text" id="risk-level-text">저위험군</span>
+                    </div>
+                    <div class="score-range-text" id="score-range-text">0-3점 범위</div>
+                </div>
+
+                <!-- 점수 시각화 바 -->
+                <div class="score-visualization">
+                    <div class="score-bar-container">
+                        <div class="score-bar-segment low-risk" data-range="0-3">
+                            <span class="segment-label">저위험<br>0-3</span>
+                        </div>
+                        <div class="score-bar-segment mild-risk" data-range="4-6">
+                            <span class="segment-label">경도<br>4-6</span>
+                        </div>
+                        <div class="score-bar-segment moderate-risk" data-range="7-8">
+                            <span class="segment-label">중등도<br>7-8</span>
+                        </div>
+                        <div class="score-bar-segment high-risk" data-range="9-12">
+                            <span class="segment-label">고위험<br>9-12</span>
+                        </div>
+                    </div>
+                    <div class="score-indicator" id="score-indicator">
+                        <div class="indicator-arrow">▼</div>
+                        <div class="indicator-label">당신</div>
+                    </div>
+                </div>
+
                 <div class="result-content">
                     <h2 id="result-title" class="result-title"></h2>
                     <div id="result-message" class="result-message"></div>

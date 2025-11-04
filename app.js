@@ -305,6 +305,44 @@ async function submitToGoogleSheets() {
     }
 }
 
+// 점수 시각화 업데이트
+function updateScoreVisualization(score, riskLevel) {
+    // 모든 세그먼트의 active 클래스 제거
+    const segments = document.querySelectorAll('.score-bar-segment');
+    segments.forEach(seg => seg.classList.remove('active'));
+
+    // 현재 위험도에 해당하는 세그먼트 활성화
+    const activeSegment = document.querySelector(`.score-bar-segment.${riskLevel}-risk`);
+    if (activeSegment) {
+        activeSegment.classList.add('active');
+    }
+
+    // 점수 인디케이터 위치 계산
+    const indicator = document.getElementById('score-indicator');
+    const container = document.querySelector('.score-bar-container');
+
+    if (indicator && container) {
+        // 각 범위의 비율 계산 (0-3: 25%, 4-6: 25%, 7-8: 16.7%, 9-12: 33.3%)
+        let position = 0;
+
+        if (score <= 3) {
+            // 저위험군: 0-25%
+            position = (score / 3) * 25;
+        } else if (score <= 6) {
+            // 경도: 25-50%
+            position = 25 + ((score - 3) / 3) * 25;
+        } else if (score <= 8) {
+            // 중등도: 50-66.7%
+            position = 50 + ((score - 6) / 2) * 16.7;
+        } else {
+            // 고위험: 66.7-100%
+            position = 66.7 + ((score - 8) / 4) * 33.3;
+        }
+
+        indicator.style.left = position + '%';
+    }
+}
+
 // 결과 표시
 function showResult() {
     const scoreNumber = document.getElementById('score-number');
@@ -316,20 +354,44 @@ function showResult() {
     scoreNumber.textContent = yesCount;
 
     // 결과 범위 결정
-    let resultData;
+    let resultData, riskLevel, riskLevelText, scoreRangeText;
     if (yesCount >= results.low.range[0] && yesCount <= results.low.range[1]) {
         resultData = results.low;
+        riskLevel = 'low';
+        riskLevelText = '저위험군';
+        scoreRangeText = '0-3점 범위';
     } else if (yesCount >= results.mild.range[0] && yesCount <= results.mild.range[1]) {
         resultData = results.mild;
+        riskLevel = 'mild';
+        riskLevelText = '경도 위험군';
+        scoreRangeText = '4-6점 범위';
     } else if (yesCount >= results.moderate.range[0] && yesCount <= results.moderate.range[1]) {
         resultData = results.moderate;
+        riskLevel = 'moderate';
+        riskLevelText = '중등도 위험군';
+        scoreRangeText = '7-8점 범위';
     } else {
         resultData = results.high;
+        riskLevel = 'high';
+        riskLevelText = '고위험군';
+        scoreRangeText = '9-12점 범위';
     }
 
     // 결과 메시지 표시
     resultTitle.textContent = resultData.title;
     resultMessage.innerHTML = resultData.message;
+
+    // 위험도 레벨 배지 업데이트
+    const riskLevelBadge = document.getElementById('risk-level-badge');
+    const riskLevelTextElement = document.getElementById('risk-level-text');
+    const scoreRangeTextElement = document.getElementById('score-range-text');
+
+    riskLevelBadge.className = 'risk-level-badge ' + riskLevel;
+    riskLevelTextElement.textContent = riskLevelText;
+    scoreRangeTextElement.textContent = scoreRangeText;
+
+    // 점수 시각화 업데이트
+    updateScoreVisualization(yesCount, riskLevel);
 
     // CTA 버튼 생성 (9~12점일 때만 설문조사 버튼 표시)
     ctaContainer.innerHTML = '';
