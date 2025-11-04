@@ -455,12 +455,12 @@ body {
 
 .score-bar-segment.low-risk {
     background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-    flex: 1.5;
+    flex: 1;
 }
 
 .score-bar-segment.mild-risk {
     background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-    flex: 1.5;
+    flex: 1;
 }
 
 .score-bar-segment.moderate-risk {
@@ -470,7 +470,7 @@ body {
 
 .score-bar-segment.high-risk {
     background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-    flex: 2;
+    flex: 1;
 }
 
 .segment-label {

@@ -17,19 +17,19 @@ const questions = [
 // 결과 메시지 데이터 (12문항 기준)
 const results = {
     low: {
-        range: [0, 3],
+        range: [0, 2],
         title: "와, 집중력 갑 👏",
         message: `대부분 '아니다'라고 하셨네요! 지금 집중력이나 감정 조절 면에서 <strong>별다른 어려움 없이</strong> 잘 지내고 계신 것 같아요. 요즘 바쁘고 피곤한 건 다들 그래요~ 지금처럼 건강한 패턴 유지하시면 됩니다!<br><br><strong>💡 그래도 뭔가 이상하다 싶으면 언제든 전문가한테 물어보는 게 제일 정확해요!</strong>`,
         ctaType: "low"
     },
     mild: {
-        range: [4, 6],
+        range: [3, 5],
         title: "요즘 좀 힘들죠? 😥",
         message: `몇 가지 항목에 '그렇다'고 하셨어요. 최근에 <strong>야근 많이 하거나, 멘탈이 힘들거나, 잠을 제대로 못 자거나</strong> 그러지 않았나요? 그럴 때 집중력 떨어지는 건 당연해요!<br><br>일단은 좀 쉬어보고, 할 일 목록도 줄여보세요. <strong>근데 이런 게 어릴 때부터 계속 그랬다면?</strong> 그땐 한 번쯤 전문가 상담 받아보는 것도 좋을 것 같아요!`,
         ctaType: "mild"
     },
     moderate: {
-        range: [7, 8],
+        range: [6, 8],
         title: "혹시... 나도? 🤔",
         message: `꽤 많은 항목에 '그렇다'고 하셨네요. <strong>일 자꾸 미루고, 실수 많고, 감정 기복 심하고...</strong> 이런 게 반복되고 있다면 그냥 '성격'이 아닐 수도 있어요.<br><br><strong>'단순히 게으른 게 아니라 ADHD로 인한 문제'</strong>일 수도 있어요. 혼자 고민하지 말고 정신건강의학과 가서 정확하게 진단받아보세요. 생각보다 많은 사람들이 이런 어려움을 겪고 있답니다!`,
         ctaType: "moderate"
@@ -322,21 +322,21 @@ function updateScoreVisualization(score, riskLevel) {
     const container = document.querySelector('.score-bar-container');
 
     if (indicator && container) {
-        // 각 범위의 비율 계산 (0-3: 25%, 4-6: 25%, 7-8: 16.7%, 9-12: 33.3%)
+        // 각 범위의 비율 계산 (0-2: 25%, 3-5: 25%, 6-8: 25%, 9-12: 25%)
         let position = 0;
 
-        if (score <= 3) {
+        if (score <= 2) {
             // 저위험군: 0-25%
-            position = (score / 3) * 25;
-        } else if (score <= 6) {
+            position = (score / 2) * 25;
+        } else if (score <= 5) {
             // 경도: 25-50%
-            position = 25 + ((score - 3) / 3) * 25;
+            position = 25 + ((score - 2) / 3) * 25;
         } else if (score <= 8) {
-            // 중등도: 50-66.7%
-            position = 50 + ((score - 6) / 2) * 16.7;
+            // 중등도: 50-75%
+            position = 50 + ((score - 5) / 3) * 25;
         } else {
-            // 고위험: 66.7-100%
-            position = 66.7 + ((score - 8) / 4) * 33.3;
+            // 고위험: 75-100%
+            position = 75 + ((score - 8) / 4) * 25;
         }
 
         indicator.style.left = position + '%';
@@ -359,17 +359,17 @@ function showResult() {
         resultData = results.low;
         riskLevel = 'low';
         riskLevelText = '저위험군';
-        scoreRangeText = '0-3점 범위';
+        scoreRangeText = '0-2점 범위';
     } else if (yesCount >= results.mild.range[0] && yesCount <= results.mild.range[1]) {
         resultData = results.mild;
         riskLevel = 'mild';
         riskLevelText = '경도 위험군';
-        scoreRangeText = '4-6점 범위';
+        scoreRangeText = '3-5점 범위';
     } else if (yesCount >= results.moderate.range[0] && yesCount <= results.moderate.range[1]) {
         resultData = results.moderate;
         riskLevel = 'moderate';
         riskLevelText = '중등도 위험군';
-        scoreRangeText = '7-8점 범위';
+        scoreRangeText = '6-8점 범위';
     } else {
         resultData = results.high;
         riskLevel = 'high';
