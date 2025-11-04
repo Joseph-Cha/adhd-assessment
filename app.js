@@ -29,13 +29,13 @@ const results = {
         ctaType: "mild"
     },
     moderate: {
-        range: [7, 9],
+        range: [7, 8],
         title: "혹시... 나도? 🤔",
         message: `꽤 많은 항목에 '그렇다'고 하셨네요. <strong>일 자꾸 미루고, 실수 많고, 감정 기복 심하고...</strong> 이런 게 반복되고 있다면 그냥 '성격'이 아닐 수도 있어요.<br><br><strong>'단순히 게으른 게 아니라 ADHD로 인한 문제'</strong>일 수도 있어요. 혼자 고민하지 말고 정신건강의학과 가서 정확하게 진단받아보세요. 생각보다 많은 사람들이 이런 어려움을 겪고 있답니다!`,
         ctaType: "moderate"
     },
     high: {
-        range: [10, 12],
+        range: [9, 12],
         title: " 🚨",
         message: `거의 모든 항목에 '그렇다'고 하셨네요. 지금 겪고 있는 <strong>집중력 문제, 충동성, 감정 조절 어려움</strong>이 일상생활을 많이 힘들게 하고 있을 것 같아요.<br><br>ADHD는 <strong>방치하면 점점 더 힘들어져요.</strong> 약물치료랑 행동 전략으로 충분히 나아질 수 있어요! <strong>제발 미루지 말고 정신건강의학과 예약하세요.</strong> 빨리 치료 시작할수록 삶의 질이 확 달라집니다!`,
         ctaType: "high"
@@ -148,6 +148,42 @@ let yesCount = 0;
 let userGender = null; // 'male', 'female', 또는 'skip'
 let userAnswers = []; // 각 문항별 답변 저장 (true: 그렇다, false: 아니다)
 let trafficSourceData = null; // 유입 경로 데이터 (최초 방문 시 1회 저장)
+let isTestMode = false; // 테스트 모드 여부 (URL에 ?test=true 또는 ?debug=true가 있으면 활성화)
+
+// 테스트 모드 확인 함수
+function checkTestMode() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('test') === 'true' || urlParams.get('debug') === 'true';
+}
+
+// 테스트 모드 배너 표시
+function showTestModeBanner() {
+    const banner = document.createElement('div');
+    banner.id = 'test-mode-banner';
+    banner.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+        color: white;
+        padding: 10px 20px;
+        text-align: center;
+        font-weight: 600;
+        font-size: 14px;
+        z-index: 10000;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        animation: slideDown 0.3s ease-out;
+    `;
+    banner.innerHTML = '🧪 테스트 모드 활성화 - 데이터가 엑셀 시트에 저장되지 않습니다';
+    document.body.prepend(banner);
+
+    // body에 padding 추가하여 배너에 가려지지 않도록
+    document.body.style.paddingTop = '40px';
+
+    console.log('%c🧪 테스트 모드 활성화', 'background: #ff6b6b; color: white; padding: 8px 12px; border-radius: 4px; font-weight: bold;');
+    console.log('데이터가 Google Sheets에 저장되지 않습니다.');
+}
 
 // 페이지 전환 함수
 function showPage(pageId) {
@@ -212,6 +248,20 @@ function answer(isYes) {
 
 // 구글 시트에 결과 전송 (유입 경로 정보 포함)
 async function submitToGoogleSheets() {
+    // 테스트 모드일 때는 제출하지 않음
+    if (isTestMode) {
+        console.log('%c🧪 테스트 모드: Google Sheets 제출 건너뛰기', 'background: #fbbf24; color: #000; padding: 8px 12px; border-radius: 4px; font-weight: bold;');
+        console.log('제출될 예정이었던 데이터:', {
+            gender: userGender,
+            answers: userAnswers,
+            score: yesCount,
+            utm_source: trafficSourceData.source,
+            utm_medium: trafficSourceData.medium,
+            utm_campaign: trafficSourceData.campaign
+        });
+        return; // 제출하지 않고 종료
+    }
+
     const data = {
         // 기존 테스트 결과 데이터
         gender: userGender,
@@ -281,18 +331,30 @@ function showResult() {
     resultTitle.textContent = resultData.title;
     resultMessage.innerHTML = resultData.message;
 
-    // CTA 버튼 생성 (10~12점일 때만 설문조사 버튼 표시)
+    // CTA 버튼 생성 (9~12점일 때만 설문조사 버튼 표시)
     ctaContainer.innerHTML = '';
 
-    if (yesCount >= 10 && yesCount <= 12) {
-        // N >= 10: 설문조사 참여 안내 버튼
-        const btn = document.createElement('button');
-        btn.className = 'cta-btn cta-primary';
-        btn.textContent = '📝 설문조사 참여하고 리워드 받기(스타벅스 쿠폰)';
-        btn.onclick = function() {
-            window.open(SURVEY_URL, '_blank');
-        };
-        ctaContainer.appendChild(btn);
+    if (yesCount >= 9 && yesCount <= 12) {
+        // ========================================
+        // 설문조사 CTA 버전 선택
+        // ========================================
+        // 아래 버전 중 하나를 선택하여 테스트하세요!
+        // 원하는 버전의 주석을 해제하고, 나머지는 주석 처리하세요.
+
+        // 현재 버전 (기본)
+        // renderSurveyVersion_Original(ctaContainer);
+
+        // 버전 A: 짧고 강력한 카피 + 긴급성
+        // renderSurveyVersion_A(ctaContainer);
+
+        // 버전 B: 설명 박스 + 혜택 명확화
+        // renderSurveyVersion_B(ctaContainer);
+
+        // 버전 C: 감성적 접근 + 사회적 기여
+        // renderSurveyVersion_C(ctaContainer);
+
+        // 버전 D: 희소성 + 시간 제한 강조
+        renderSurveyVersion_D(ctaContainer);
     }
 
     showPage('result-page');
@@ -312,6 +374,12 @@ function restartTest() {
 
 // 페이지 로드 시 초기화
 document.addEventListener('DOMContentLoaded', function() {
+    // 테스트 모드 확인
+    isTestMode = checkTestMode();
+    if (isTestMode) {
+        showTestModeBanner();
+    }
+
     // 유입 경로 추적 (세션 기반 - 최초 방문 시 1회만 저장)
     const SESSION_KEY = 'adhd_traffic_source';
     const existingSource = sessionStorage.getItem(SESSION_KEY);
@@ -472,11 +540,166 @@ function copyLink() {
 }
 
 // ============================================
-// 설문조사 안내 기능
+// 설문조사 CTA 버전들
 // ============================================
 
 // 설문조사 URL
 const SURVEY_URL = 'https://forms.gle/9UHr4v179EKxnUcC9';
+
+// 현재 버전 (기본)
+function renderSurveyVersion_Original(container) {
+    const btn = document.createElement('button');
+    btn.className = 'cta-btn cta-primary';
+    btn.textContent = '📝 설문조사 참여하고 리워드 받기(스타벅스 쿠폰)';
+    btn.onclick = function() {
+        window.open(SURVEY_URL, '_blank');
+    };
+    container.appendChild(btn);
+}
+
+// 버전 A: 짧고 강력한 카피 + 긴급성
+function renderSurveyVersion_A(container) {
+    const btn = document.createElement('button');
+    btn.className = 'cta-btn cta-primary';
+    btn.style.fontSize = '18px';
+    btn.style.padding = '20px 30px';
+    btn.style.animation = 'pulse 2s infinite';
+    btn.innerHTML = '🎁 지금 참여하면 스벅 쿠폰!<br><small style="font-size: 14px; opacity: 0.9;">3분이면 끝 • 추첨 3명</small>';
+    btn.onclick = function() {
+        window.open(SURVEY_URL, '_blank');
+    };
+    container.appendChild(btn);
+}
+
+// 버전 B: 설명 박스 + 혜택 명확화
+function renderSurveyVersion_B(container) {
+    // 설명 박스
+    const infoBox = document.createElement('div');
+    infoBox.style.cssText = `
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 15px;
+        text-align: center;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    `;
+    infoBox.innerHTML = `
+        <div style="font-size: 16px; font-weight: 600; margin-bottom: 10px;">
+            💝 ADHD 지원 서비스 개발 설문조사
+        </div>
+        <div style="font-size: 14px; line-height: 1.6; opacity: 0.95;">
+            ✓ 소요 시간: 약 3분<br>
+            ✓ 리워드: 스타벅스 아메리카노 기프티콘 (추첨 3명)<br>
+            ✓ 마감: 11월 7일 (목)까지
+        </div>
+    `;
+
+    const btn = document.createElement('button');
+    btn.className = 'cta-btn cta-primary';
+    btn.style.fontSize = '17px';
+    btn.textContent = '📝 설문조사 참여하기';
+    btn.onclick = function() {
+        window.open(SURVEY_URL, '_blank');
+    };
+
+    container.appendChild(infoBox);
+    container.appendChild(btn);
+}
+
+// 버전 C: 감성적 접근 + 사회적 기여
+function renderSurveyVersion_C(container) {
+    const messageBox = document.createElement('div');
+    messageBox.style.cssText = `
+        background: #f8f9ff;
+        border-left: 4px solid #6366f1;
+        padding: 18px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        line-height: 1.7;
+    `;
+    messageBox.innerHTML = `
+        <div style="font-size: 15px; color: #333; margin-bottom: 12px;">
+            <strong style="color: #6366f1;">💬 당신의 이야기가 필요합니다</strong>
+        </div>
+        <div style="font-size: 14px; color: #555;">
+            당신의 솔직한 경험이 비슷한 어려움을 겪는 분들을 위한 <strong>실질적인 서비스</strong>를 만드는 데 큰 힘이 됩니다.
+        </div>
+        <div style="font-size: 13px; color: #888; margin-top: 10px;">
+            📋 3분 소요 | 🎁 감사 리워드: 스벅 쿠폰 (추첨)
+        </div>
+    `;
+
+    const btn = document.createElement('button');
+    btn.className = 'cta-btn cta-primary';
+    btn.style.fontSize = '16px';
+    btn.textContent = '내 경험 나누고 서비스 개발 돕기';
+    btn.onclick = function() {
+        window.open(SURVEY_URL, '_blank');
+    };
+
+    container.appendChild(messageBox);
+    container.appendChild(btn);
+}
+
+// 버전 D: 희소성 + 시간 제한 강조
+function renderSurveyVersion_D(container) {
+    // 긴급 배너
+    const urgencyBanner = document.createElement('div');
+    urgencyBanner.style.cssText = `
+        background: linear-gradient(90deg, #ef4444 0%, #dc2626 100%);
+        color: white;
+        padding: 10px 15px;
+        border-radius: 8px;
+        margin-bottom: 12px;
+        text-align: center;
+        font-size: 14px;
+        font-weight: 600;
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+    `;
+    urgencyBanner.innerHTML = '⏰ 마감 임박! 11월 7일(목)까지만 참여 가능';
+
+    const infoBox = document.createElement('div');
+    infoBox.style.cssText = `
+        background: #fff9e6;
+        border: 2px solid #fbbf24;
+        padding: 18px;
+        border-radius: 10px;
+        margin-bottom: 15px;
+    `;
+    infoBox.innerHTML = `
+        <div style="font-size: 15px; font-weight: 600; color: #92400e; margin-bottom: 10px;">
+            🎁 선착순 설문 참여 혜택
+        </div>
+        <div style="font-size: 14px; color: #78350f; line-height: 1.6;">
+            ✓ 스타벅스 아이스 아메리카노 (3명 추첨)<br>
+            ✓ 심층 인터뷰 참여 시 배민 쿠폰 2만원 추가 증정<br>
+            ✓ 소요시간 단 3분
+        </div>
+    `;
+
+    const btn = document.createElement('button');
+    btn.className = 'cta-btn cta-primary';
+    btn.style.cssText = `
+        font-size: 17px;
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        padding: 18px 30px;
+        font-weight: 700;
+        box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+    `;
+    btn.innerHTML = '지금 바로 참여하기 →';
+    btn.onclick = function() {
+        window.open(SURVEY_URL, '_blank');
+    };
+
+    container.appendChild(urgencyBanner);
+    container.appendChild(infoBox);
+    container.appendChild(btn);
+}
+
+// ============================================
+// 설문조사 안내 기능
+// ============================================
 
 // 설문조사 참여 안내
 function showSurveyInfo() {
