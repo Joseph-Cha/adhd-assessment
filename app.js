@@ -419,30 +419,12 @@ function showResult() {
     // 점수 시각화 업데이트
     updateScoreVisualization(yesCount, riskLevel);
 
-    // CTA 버튼 생성 (9~12점일 때만 설문조사 버튼 표시)
+    // CTA 버튼 생성 (9~12점일 때만 이메일 수집 폼 표시)
     ctaContainer.innerHTML = '';
 
     if (yesCount >= 9 && yesCount <= 12) {
-        // ========================================
-        // 설문조사 CTA 버전 선택
-        // ========================================
-        // 아래 버전 중 하나를 선택하여 테스트하세요!
-        // 원하는 버전의 주석을 해제하고, 나머지는 주석 처리하세요.
-
-        // 현재 버전 (기본)
-        // renderSurveyVersion_Original(ctaContainer);
-
-        // 버전 A: 짧고 강력한 카피 + 긴급성
-        // renderSurveyVersion_A(ctaContainer);
-
-        // 버전 B: 설명 박스 + 혜택 명확화
-        // renderSurveyVersion_B(ctaContainer);
-
-        // 버전 C: 감성적 접근 + 사회적 기여
-        // renderSurveyVersion_C(ctaContainer);
-
-        // 버전 D: 희소성 + 시간 제한 강조
-        renderSurveyVersion_D(ctaContainer);
+        // 고위험군 대상 이메일 수집 기능
+        renderEmailCollectionForm(ctaContainer);
     }
 
     showPage('result-page');
@@ -628,219 +610,305 @@ function copyLink() {
 }
 
 // ============================================
-// 설문조사 CTA 버전들
+// 이메일 수집 기능 (고위험군 대상)
 // ============================================
 
-// 설문조사 URL
-const SURVEY_URL = 'https://forms.gle/9UHr4v179EKxnUcC9';
-
-// 현재 버전 (기본)
-function renderSurveyVersion_Original(container) {
-    const btn = document.createElement('button');
-    btn.className = 'cta-btn cta-primary';
-    btn.textContent = '📝 설문조사 참여하고 리워드 받기(배민 쿠폰 5천원)';
-    btn.onclick = function() {
-        window.open(SURVEY_URL, '_blank');
-    };
-    container.appendChild(btn);
-}
-
-// 버전 A: 짧고 강력한 카피 + 긴급성
-function renderSurveyVersion_A(container) {
-    const btn = document.createElement('button');
-    btn.className = 'cta-btn cta-primary';
-    btn.style.fontSize = '18px';
-    btn.style.padding = '20px 30px';
-    btn.style.animation = 'pulse 2s infinite';
-    btn.innerHTML = '🎁 지금 참여하면 배민 쿠폰 5천원 (추첨)!<br><small style="font-size: 14px; opacity: 0.9;">3분이면 끝</small>';
-    btn.onclick = function() {
-        window.open(SURVEY_URL, '_blank');
-    };
-    container.appendChild(btn);
-}
-
-// 버전 B: 설명 박스 + 혜택 명확화
-function renderSurveyVersion_B(container) {
-    // 설명 박스
+// 이메일 수집 폼 렌더링
+function renderEmailCollectionForm(container) {
+    // 정보 제공 안내 박스
     const infoBox = document.createElement('div');
     infoBox.style.cssText = `
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
         padding: 20px;
         border-radius: 12px;
-        margin-bottom: 15px;
+        margin-bottom: 20px;
         text-align: center;
         box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
     `;
     infoBox.innerHTML = `
         <div style="font-size: 16px; font-weight: 600; margin-bottom: 10px;">
-            💝 ADHD 지원 서비스 개발 설문조사
+            📬 성인 ADHD 관련 유용한 정보를 받아보세요
         </div>
         <div style="font-size: 14px; line-height: 1.6; opacity: 0.95;">
-            ✓ 소요 시간: 약 3분<br>
-            ✓ 리워드: 배민 쿠폰 5천원 (추첨)<br>
-            ✓ 마감: 11월 7일 (목)까지
+            ✓ ADHD 관리 팁과 전략<br>
+            ✓ 최신 연구 및 치료 정보<br>
+            ✓ 실용적인 생활 가이드
         </div>
     `;
 
-    const btn = document.createElement('button');
-    btn.className = 'cta-btn cta-primary';
-    btn.style.fontSize = '17px';
-    btn.textContent = '📝 설문조사 참여하기';
-    btn.onclick = function() {
-        window.open(SURVEY_URL, '_blank');
-    };
-
-    container.appendChild(infoBox);
-    container.appendChild(btn);
-}
-
-// 버전 C: 감성적 접근 + 사회적 기여
-function renderSurveyVersion_C(container) {
-    const messageBox = document.createElement('div');
-    messageBox.style.cssText = `
+    // 이메일 입력 폼
+    const formContainer = document.createElement('div');
+    formContainer.style.cssText = `
         background: #f8f9ff;
-        border-left: 4px solid #6366f1;
-        padding: 18px;
-        border-radius: 8px;
-        margin-bottom: 15px;
-        line-height: 1.7;
-    `;
-    messageBox.innerHTML = `
-        <div style="font-size: 15px; color: #333; margin-bottom: 12px;">
-            <strong style="color: #6366f1;">💬 당신의 이야기가 필요합니다</strong>
-        </div>
-        <div style="font-size: 14px; color: #555;">
-            당신의 솔직한 경험이 비슷한 어려움을 겪는 분들을 위한 <strong>실질적인 서비스</strong>를 만드는 데 큰 힘이 됩니다.
-        </div>
-        <div style="font-size: 13px; color: #888; margin-top: 10px;">
-            📋 3분 소요 | 🎁 감사 리워드: 배민 쿠폰 5천원 (추첨)
-        </div>
-    `;
-
-    const btn = document.createElement('button');
-    btn.className = 'cta-btn cta-primary';
-    btn.style.fontSize = '16px';
-    btn.textContent = '내 경험 나누고 서비스 개발 돕기';
-    btn.onclick = function() {
-        window.open(SURVEY_URL, '_blank');
-    };
-
-    container.appendChild(messageBox);
-    container.appendChild(btn);
-}
-
-// 버전 D: 희소성 + 시간 제한 강조
-function renderSurveyVersion_D(container) {
-    // 긴급 배너
-    const urgencyBanner = document.createElement('div');
-    urgencyBanner.style.cssText = `
-        background: linear-gradient(90deg, #ef4444 0%, #dc2626 100%);
-        color: white;
-        padding: 10px 15px;
-        border-radius: 8px;
-        margin-bottom: 12px;
-        text-align: center;
-        font-size: 14px;
-        font-weight: 600;
-        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
-    `;
-    urgencyBanner.innerHTML = '⏰ 마감 임박! 11월 7일(목)까지만 참여 가능';
-
-    const infoBox = document.createElement('div');
-    infoBox.style.cssText = `
-        background: #fff9e6;
-        border: 2px solid #fbbf24;
-        padding: 18px;
+        border: 2px solid #e0e7ff;
+        padding: 20px;
         border-radius: 10px;
         margin-bottom: 15px;
     `;
-    infoBox.innerHTML = `
-        <div style="font-size: 15px; font-weight: 600; color: #92400e; margin-bottom: 10px;">
-            🎁 선착순 설문 참여 혜택
-        </div>
-        <div style="font-size: 14px; color: #78350f; line-height: 1.6;">
-            ✓ 배민 쿠폰 5천원 (추첨)<br>
-            ✓ 심층 인터뷰 참여 시 배민 쿠폰 2만원 추가 증정<br>
-            ✓ 소요시간 단 3분
-        </div>
-    `;
 
-    const btn = document.createElement('button');
-    btn.className = 'cta-btn cta-primary';
-    btn.style.cssText = `
-        font-size: 17px;
-        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-        padding: 18px 30px;
-        font-weight: 700;
-        box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+    const emailLabel = document.createElement('label');
+    emailLabel.style.cssText = `
+        display: block;
+        font-size: 14px;
+        font-weight: 600;
+        color: #4c51bf;
+        margin-bottom: 8px;
     `;
-    btn.innerHTML = '지금 바로 참여하기 →';
-    btn.onclick = function() {
-        window.open(SURVEY_URL, '_blank');
+    emailLabel.textContent = '이메일 주소';
+
+    const emailInput = document.createElement('input');
+    emailInput.type = 'email';
+    emailInput.id = 'email-input';
+    emailInput.placeholder = 'your-email@example.com';
+    emailInput.required = true;
+    emailInput.style.cssText = `
+        width: 100%;
+        padding: 12px 15px;
+        font-size: 15px;
+        border: 2px solid #cbd5e0;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        box-sizing: border-box;
+        transition: border-color 0.3s ease;
+    `;
+    emailInput.onfocus = function() {
+        this.style.borderColor = '#6366f1';
+    };
+    emailInput.onblur = function() {
+        this.style.borderColor = '#cbd5e0';
     };
 
-    container.appendChild(urgencyBanner);
+    // 개인정보 수집 동의 체크박스
+    const consentContainer = document.createElement('div');
+    consentContainer.style.cssText = `
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+    `;
+
+    const consentCheckboxWrapper = document.createElement('label');
+    consentCheckboxWrapper.style.cssText = `
+        display: flex;
+        align-items: flex-start;
+        cursor: pointer;
+        font-size: 14px;
+        line-height: 1.5;
+        color: #2d3748;
+    `;
+
+    const consentCheckbox = document.createElement('input');
+    consentCheckbox.type = 'checkbox';
+    consentCheckbox.id = 'privacy-consent';
+    consentCheckbox.required = true;
+    consentCheckbox.style.cssText = `
+        margin-right: 10px;
+        margin-top: 3px;
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+        flex-shrink: 0;
+    `;
+
+    const consentText = document.createElement('span');
+    consentText.innerHTML = `
+        <strong>[필수]</strong> 개인정보 수집 및 이용에 동의합니다
+        <a href="#" id="view-privacy-details" style="color: #6366f1; text-decoration: underline; margin-left: 5px;">상세보기</a>
+    `;
+
+    consentCheckboxWrapper.appendChild(consentCheckbox);
+    consentCheckboxWrapper.appendChild(consentText);
+    consentContainer.appendChild(consentCheckboxWrapper);
+
+    // 개인정보 수집 동의 상세 내용 (처음에는 숨김)
+    const privacyDetails = document.createElement('div');
+    privacyDetails.id = 'privacy-details';
+    privacyDetails.style.cssText = `
+        display: none;
+        background: #f7fafc;
+        border: 1px solid #e2e8f0;
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 12px;
+        font-size: 13px;
+        line-height: 1.7;
+        color: #4a5568;
+    `;
+    privacyDetails.innerHTML = `
+        <strong style="color: #2d3748; display: block; margin-bottom: 10px;">📋 개인정보 수집 및 이용 동의</strong>
+        <div style="margin-bottom: 8px;">
+            <strong>• 수집 항목:</strong> 이메일 주소
+        </div>
+        <div style="margin-bottom: 8px;">
+            <strong>• 수집 목적:</strong> 성인 ADHD 관련 유용한 정보 제공
+        </div>
+        <div style="margin-bottom: 8px;">
+            <strong>• 보유 및 이용 기간:</strong> 정보 제공 목적 달성 후 또는 이용자의 삭제 요청 시까지 보관됩니다. (최대 1년)
+        </div>
+        <div style="margin-bottom: 8px;">
+            <strong>• 제3자 제공 (위탁):</strong> 원칙적으로 제공하지 않습니다. 다만, 이메일 발송을 위해 외부 대행 업체를 이용할 경우, 발송 목적으로 이메일 주소를 해당 업체에 한시적으로 전달할 수 있습니다. (발송 목적 외 사용 엄격 금지)
+        </div>
+        <div style="color: #718096; font-size: 12px; margin-top: 10px;">
+            * 귀하는 개인정보 수집 및 이용에 대한 동의를 거부할 권리가 있습니다. 다만, 동의를 거부할 경우 정보 제공 서비스를 이용하실 수 없습니다.
+        </div>
+    `;
+    consentContainer.appendChild(privacyDetails);
+
+    // 제출 버튼
+    const submitBtn = document.createElement('button');
+    submitBtn.className = 'cta-btn cta-primary';
+    submitBtn.style.cssText = `
+        font-size: 16px;
+        background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+        padding: 15px 30px;
+        font-weight: 600;
+        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+        width: 100%;
+    `;
+    submitBtn.textContent = '정보 받아보기 ✉️';
+    submitBtn.onclick = function() {
+        submitEmailToGoogleSheets();
+    };
+
+    // 요소들을 폼 컨테이너에 추가
+    formContainer.appendChild(emailLabel);
+    formContainer.appendChild(emailInput);
+    formContainer.appendChild(consentContainer);
+    formContainer.appendChild(submitBtn);
+
+    // 최종적으로 컨테이너에 추가
     container.appendChild(infoBox);
-    container.appendChild(btn);
+    container.appendChild(formContainer);
+
+    // 상세보기 링크 클릭 이벤트
+    setTimeout(() => {
+        const viewDetailsLink = document.getElementById('view-privacy-details');
+        if (viewDetailsLink) {
+            viewDetailsLink.onclick = function(e) {
+                e.preventDefault();
+                const details = document.getElementById('privacy-details');
+                if (details.style.display === 'none') {
+                    details.style.display = 'block';
+                    this.textContent = '닫기';
+                } else {
+                    details.style.display = 'none';
+                    this.textContent = '상세보기';
+                }
+            };
+        }
+    }, 100);
 }
 
-// ============================================
-// 설문조사 안내 기능
-// ============================================
+// 이메일 데이터를 Google Sheets에 전송
+async function submitEmailToGoogleSheets() {
+    const emailInput = document.getElementById('email-input');
+    const consentCheckbox = document.getElementById('privacy-consent');
 
-// 설문조사 참여 안내
-function showSurveyInfo() {
-    const message = `📝 성인 ADHD 지원 서비스 개발을 위한 설문조사 안내
+    // 유효성 검사
+    if (!emailInput || !emailInput.value.trim()) {
+        alert('이메일 주소를 입력해 주세요.');
+        emailInput?.focus();
+        return;
+    }
 
-안녕하세요! 성인 ADHD 지원 서비스 개발팀입니다.
+    if (!consentCheckbox || !consentCheckbox.checked) {
+        alert('개인정보 수집 및 이용에 동의해 주세요.');
+        return;
+    }
 
-저희 팀은 성인 ADHD로 인해 일상, 업무, 관계에서 힘든 시간을 보내고 계신 분들을 위한 실질적이고 효과적인 지원 서비스를 기획 중입니다.
+    // 이메일 형식 검증
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(emailInput.value.trim())) {
+        alert('올바른 이메일 주소를 입력해 주세요.');
+        emailInput.focus();
+        return;
+    }
 
-현재 ADHD를 겪는 분들이 어떤 부분에서 가장 큰 어려움을 느끼시는지, 그리고 어떤 종류의 도움이 절실한지에 대한 솔직한 인사이트를 얻고자 본 설문을 진행하게 되었습니다.
+    // 테스트 모드일 때는 제출하지 않음
+    if (isTestMode) {
+        console.log('%c🧪 테스트 모드: 이메일 제출 건너뛰기', 'background: #fbbf24; color: #000; padding: 8px 12px; border-radius: 4px; font-weight: bold;');
+        console.log('제출될 예정이었던 이메일 데이터:', {
+            email: emailInput.value.trim(),
+            consent: consentCheckbox.checked,
+            score: yesCount
+        });
+        alert('✅ 테스트 모드: 이메일이 등록되었습니다!\n(실제로는 저장되지 않습니다)');
+        return;
+    }
 
-여러분의 귀한 경험이 실제 문제를 해결하는 웹/앱 서비스를 만드는 데 결정적인 힘이 됩니다! 💖
+    const data = {
+        type: 'email_subscription', // 이메일 구독 타입 명시
+        email: emailInput.value.trim(),
+        consent: consentCheckbox.checked,
+        score: yesCount,
+        gender: userGender,
 
-━━━━━━━━━━━━━━━━━━━━
+        // 유입 경로 추적 데이터
+        utm_source: trafficSourceData.source,
+        utm_medium: trafficSourceData.medium,
+        utm_campaign: trafficSourceData.campaign,
 
-🎁 참여 혜택 & 개인정보 보호 약속
+        // 추가 메타데이터
+        timestamp: new Date().toISOString(),
+        user_agent: navigator.userAgent
+    };
 
-✓ 참여 대상
-  성인 ADHD 진단(또는 의심) 후 일상생활에서 어려움을 겪고 계신 분
+    try {
+        // 버튼 비활성화
+        const submitBtn = document.querySelector('.cta-btn.cta-primary');
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.textContent = '처리 중...';
+        }
 
-✓ 감사 보상
-  설문에 참여해 주신 모든 분께 추첨을 통해 스타벅스 아이스 아메리카노 기프티콘 (3명)을 전해드립니다! ☕
+        await fetch(GOOGLE_SHEETS_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        });
 
-✓ 개인정보 수집 및 파기
-  • 남겨주신 핸드폰 번호는 오직 기프티콘 추첨 및 발송에만 사용됩니다.
-  • 조사 종료 및 기프티콘 발송 완료 후 즉시 파기됩니다. 안심하고 참여해 주세요!
+        console.log('이메일 데이터가 구글 시트에 성공적으로 저장되었습니다.');
+        console.log('전송된 데이터:', data);
 
-✓ 심층 인터뷰 참여 기회
-  • 추후 서비스 기획을 위한 심층 인터뷰(FGI) 참여자를 모집합니다.
-  • 주관식 답변 내용을 바탕으로 대상자를 선정하며, 참여 의사가 있으신 분은 설문 마지막 장에 꼭 체크해 주세요!
-  • 선정 후 인터뷰 참여 시 배달의 민족 2만원 쿠폰을 추가 증정합니다. 🍴
+        // 성공 메시지 표시
+        alert('✅ 이메일이 성공적으로 등록되었습니다!\n성인 ADHD 관련 유용한 정보를 이메일로 보내드리겠습니다.');
 
-━━━━━━━━━━━━━━━━━━━━
+        // 폼 숨기기 및 성공 메시지 표시
+        const formContainer = emailInput.closest('div');
+        if (formContainer) {
+            formContainer.innerHTML = `
+                <div style="
+                    background: #d1fae5;
+                    border: 2px solid #10b981;
+                    padding: 20px;
+                    border-radius: 10px;
+                    text-align: center;
+                    color: #065f46;
+                ">
+                    <div style="font-size: 40px; margin-bottom: 10px;">✅</div>
+                    <div style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">
+                        등록 완료!
+                    </div>
+                    <div style="font-size: 14px; line-height: 1.6;">
+                        입력하신 이메일로 유용한 정보를 보내드리겠습니다.
+                    </div>
+                </div>
+            `;
+        }
+    } catch (error) {
+        console.error('이메일 데이터 전송 중 오류 발생:', error);
+        alert('❌ 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.');
 
-📅 설문 기간 및 보상 발송 일정
-
-• 설문기간: 2025. 11. 4 (월) ~ 2025. 11. 7 (목) (총 4일간 진행)
-• 기프티콘 발송일: 2025. 11. 11 (월)
-
-※ 기프티콘은 당첨자분들께만 발송되며, 미당첨자분들께는 별도 연락이 가지 않으니 양해 부탁드립니다.
-
-━━━━━━━━━━━━━━━━━━━━
-
-설문조사에 참여하시겠습니까?`;
-
-    // 사용자 확인
-    const confirmed = confirm(message);
-
-    if (confirmed) {
-        // 설문 링크로 이동
-        window.open(SURVEY_URL, '_blank');
-        console.log('설문조사 페이지로 이동합니다.');
-    } else {
-        console.log('설문조사 참여를 취소했습니다.');
+        // 버튼 재활성화
+        const submitBtn = document.querySelector('.cta-btn.cta-primary');
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = '정보 받아보기 ✉️';
+        }
     }
 }
