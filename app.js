@@ -419,13 +419,16 @@ function showResult() {
     // 점수 시각화 업데이트
     updateScoreVisualization(yesCount, riskLevel);
 
-    // CTA 버튼 생성 (9~12점일 때만 이메일 수집 폼 표시)
+    // CTA 버튼 생성
     ctaContainer.innerHTML = '';
 
     if (yesCount >= 9 && yesCount <= 12) {
         // 고위험군 대상 이메일 수집 기능
         renderEmailCollectionForm(ctaContainer);
     }
+
+    // 모든 점수 범위에 FocusMate 추천 추가
+    renderFocusMateRecommendation(ctaContainer, yesCount);
 
     showPage('result-page');
 
@@ -607,6 +610,110 @@ function copyLink() {
         // 클립보드 API 미지원 - 프롬프트로 표시
         prompt('링크를 복사하세요:', url);
     }
+}
+
+// ============================================
+// FocusMate 서비스 추천 기능
+// ============================================
+
+// FocusMate 서비스 추천 박스 렌더링
+function renderFocusMateRecommendation(container, score) {
+    // 점수별 메시지 설정
+    let title, description, benefit1, benefit2, benefit3;
+
+    if (score <= 2) {
+        // 저위험군
+        title = "💪 집중력을 더 높이고 싶으세요?";
+        description = "집중력이 좋으시지만, 더 생산적인 하루를 만들고 싶다면 Focus Mate를 사용해보세요.";
+        benefit1 = "5초 실행 리추얼로 즉시 행동 시작";
+        benefit2 = "AI가 작업을 15-25분 단위로 분해";
+        benefit3 = "정체성 기반 동기부여로 습관 형성";
+    } else if (score <= 5) {
+        // 경도
+        title = "🎯 피곤할 때도 집중력을 올리는 방법";
+        description = "요즘 힘드실 때, 작업을 미루지 않고 바로 시작할 수 있는 도구가 있어요.";
+        benefit1 = "망설이는 30분을 5초로 단축";
+        benefit2 = "에너지 상태에 맞춘 작업 순서 추천";
+        benefit3 = "자동 타이머로 집중력 유지";
+    } else if (score <= 8) {
+        // 중등도
+        title = "🧠 작업 미루기와 집중 문제, AI가 도와드려요";
+        description = "ADHD 증상으로 어려움을 겪고 계신다면, 일상 관리에 실질적으로 도움이 되는 도구를 사용해보세요.";
+        benefit1 = "큰 작업을 작은 단위로 자동 분해";
+        benefit2 = "5초 호흡으로 심리적 준비 완료";
+        benefit3 = "AI 맞춤 작업 우선순위 제안";
+    } else {
+        // 고위험군
+        title = "🏥 병원 치료와 함께 사용하면 좋은 도구";
+        description = "전문의 진료와 함께 일상에서 집중력을 관리하는 데 도움이 되는 AI 도구입니다.";
+        benefit1 = "즉각적인 행동 개시 지원";
+        benefit2 = "작업 분해 및 우선순위 관리";
+        benefit3 = "꾸준한 실행 습관 형성";
+    }
+
+    // FocusMate 추천 박스
+    const focusMateBox = document.createElement('div');
+    focusMateBox.style.cssText = `
+        background: linear-gradient(135deg, #f0f4ff 0%, #e0e7ff 100%);
+        border: 2px solid #6366f1;
+        padding: 24px;
+        border-radius: 16px;
+        margin-top: 20px;
+        box-shadow: 0 4px 20px rgba(99, 102, 241, 0.15);
+    `;
+
+    focusMateBox.innerHTML = `
+        <div style="text-align: center; margin-bottom: 20px;">
+            <div style="font-size: 20px; font-weight: 700; color: #4338ca; margin-bottom: 10px;">
+                ${title}
+            </div>
+            <div style="font-size: 15px; line-height: 1.6; color: #4b5563;">
+                ${description}
+            </div>
+        </div>
+
+        <div style="background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+            <div style="font-size: 16px; font-weight: 600; color: #1f2937; margin-bottom: 15px; text-align: center;">
+                ✨ Focus Mate 주요 기능
+            </div>
+            <div style="font-size: 14px; line-height: 1.8; color: #374151;">
+                <div style="margin-bottom: 10px; padding-left: 8px; border-left: 3px solid #6366f1;">
+                    <strong style="color: #4338ca;">•</strong> ${benefit1}
+                </div>
+                <div style="margin-bottom: 10px; padding-left: 8px; border-left: 3px solid #6366f1;">
+                    <strong style="color: #4338ca;">•</strong> ${benefit2}
+                </div>
+                <div style="padding-left: 8px; border-left: 3px solid #6366f1;">
+                    <strong style="color: #4338ca;">•</strong> ${benefit3}
+                </div>
+            </div>
+        </div>
+
+        <a href="https://focus-mate-web-landing.netlify.app/" target="_blank" rel="noopener noreferrer"
+           style="
+               display: block;
+               background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+               color: white;
+               text-decoration: none;
+               padding: 16px 24px;
+               border-radius: 10px;
+               font-size: 16px;
+               font-weight: 600;
+               text-align: center;
+               box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+               transition: transform 0.2s ease, box-shadow 0.2s ease;
+           "
+           onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(99, 102, 241, 0.5)';"
+           onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(99, 102, 241, 0.4)';">
+            🚀 Focus Mate 무료로 시작하기
+        </a>
+
+        <div style="text-align: center; margin-top: 12px; font-size: 13px; color: #6b7280;">
+            별도 가입 불필요 • 바로 사용 가능
+        </div>
+    `;
+
+    container.appendChild(focusMateBox);
 }
 
 // ============================================
